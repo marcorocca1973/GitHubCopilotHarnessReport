@@ -1,4 +1,4 @@
-# H1 Welcome to Github Copilot Harness Report repository
+# Welcome to Github Copilot Harness Report repository
 
 Download the solution Copilot Studio Agent Harness Report and install in your Power Platform Environment
 
