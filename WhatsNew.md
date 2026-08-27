@@ -11,3 +11,5 @@ https://learn.microsoft.com/en-us/power-platform/admin/inventory-sample-queries
 <img width="901" height="760" alt="image" src="https://github.com/user-attachments/assets/e4f9d986-432e-4eea-adda-4cf027c58645" />
 
 This improve report generation performance
+
+- Copilot in SharePoint prompt optimization
