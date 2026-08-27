@@ -20,90 +20,46 @@ Both csv contain AgentId and you have the possibility to add also copilot credit
 <img width="1026" height="163" alt="image" src="https://github.com/user-attachments/assets/e7de591d-25c1-4727-8b0e-460577f5a04d" />
 
 In **CopilotInSharePoint** use this simple prompt for generate the dashboard 
-"Create a self-contained interactive HTML dashboard using these two CSV files:
+"Create one self-contained offline HTML dashboard from:
+- Agents_20260827_091707.csv (master)
+- EntitlementConsumptionTenantPerAgentDetailsReport_MCSMessages_30_27Aug.csv (consumption)
 
-1. Agent inventory CSV:
-   Agents_20260817_195314.csv
+Output only final HTML, starting with <!DOCTYPE html>. No Markdown or explanations.
 
-2. Agent consumption / Copilot credits CSV:
-   EntitlementConsumptionTenantPerAgentDetailsReport_MCSMessages_30.csv
+DATA
+Join trimmed Agents.AgentId to consumption."Agent Id". Never join by name. Include only master agents; exclude consumption-only IDs. Keep every filtered master agent exactly once, even with no matching consumption, assigning billed=0, non-billed=0, total=0. Total=billed+non-billed. Billed credits are the cost measure; do not invent currency values. Blank categorical values="Unknown"; blank/invalid numbers=0.
 
-Use Agents_20260814_114619_Dashboard.html as the visual and layout reference. Keep the same general report style, but enrich it with agent cost, billed credits, non-billed credits, and total Copilot credit consumption from the EntitlementConsumption CSV.
+TECHNICAL
+Create one complete HTML file with embedded source CSV data. No external libraries, CDNs, APIs, fonts, images, or internet resources. Parse, join, filter, aggregate, and calculate in-browser using plain HTML/CSS/JS, Canvas, or inline SVG. Use a quote-aware CSV parser supporting quoted fields, commas inside quotes, escaped quotes, CRLF/LF, and empty fields. Embed CSV safely so quotes/newlines cannot break JS. HTML-escape every displayed CSV value. All KPIs, insights, charts, and table rows must update immediately after any filter change. Include Reset filters and a clear No data state.
 
-Join logic:
-- Agents CSV is the master list.
-- Join Agents.AgentId to EntitlementConsumption."Agent Id".
-- Include only agents that exist in the Agents CSV.
-- Exclude every EntitlementConsumption row whose "Agent Id" is not present in Agents.AgentId.
-- Agents present in Agents CSV with no consumption rows must still appear with zero billed, zero non-billed, and zero total credits.
-- Treat blank values as "Unknown".
+FILTERS
+Agent name, Environment, Model, Product, LLM Model, Tool Used, Channel. Agent name/Environment/Model filter master agents; the others filter consumption rows. Master agents that remain after agent filters must stay visible when consumption filters produce no matches, with zero credits. Build options dynamically and include Unknown when blanks exist.
 
-Example:
-Agent "ZAVA Spring Agent" has AgentId = 63790956-7896-430d-8fae-45f650c2faf8 in the Agents file, matching "Agent Id" in the EntitlementConsumption file.
+KPIs
+Show: Total agents; Web Enabled (IsWebSearchEnabled=true); Knowledge sum; Files sum; Avg Instructions (InstructionsCharCount); agents with total>0; agents with total=0; total billed; total non-billed; total Copilot credits. Recalculate from current filters.
 
-Technical requirements:
-- Build one self-contained HTML file.
-- No external libraries, CDN, or internet dependencies.
-- Use a quote-aware CSV parser.
-- All calculations must be performed in the browser from the embedded CSV data.
-- All filters, charts, KPIs, insights, and tables must update dynamically when filters change.
+INSIGHTS
+Dynamic cards: highest-consuming agents; highest-usage environments; model distribution; largest instruction-size agent; main "AI Feature/Billable Feature" drivers of billed usage; zero-consumption agents.
 
-Dashboard sections:
-1. KPI cards:
-   - Total agents
-   - Web Enabled
-   - Knowledge
-   - Files
-   - Avg Instructions
-   - Agents with consumption
-   - Agents with zero consumption
-   - Total billed credits
-   - Total non-billed credits
-   - Total Copilot credits
+CHARTS
+1) Consumption by agent: horizontal stacked bars, billed purple, non-billed teal, descending total, show totals.
+2) Total credits by environment, descending.
+3) Total credits by channel, descending.
+4) Top tools by total credits, descending.
+5) Feature breakdown: billed and total by "AI Feature/Billable Feature", descending.
+6) Model distribution: master-agent count by Model.
+7) InstructionsCharCount by agent, descending.
+8) Zero vs non-zero agents as donut or large comparison cards.
+Use labels/tooltips where practical. Visually truncate long labels but expose full text via title.
 
-2. Insights section:
-   - Highest consuming agents
-   - Environments with highest usage
-   - Model Distribution
-   - Instructions size by agent
-   - Main billable features driving consumption
-   - Agents with zero consumption
+TABLE
+One combined row per filtered master agent, aggregating all matching consumption rows. Columns: AgentName, AgentId, EnvironmentName, Model, Knowledge, Files, Tools, CreatedAt, Billed credit, Non-billed credit, Total credit. Default sort: total descending. Sticky header, horizontal scrolling, consistent numeric formatting, Unknown for blank categories, light amber background for zero-consumption rows.
 
-3. Interactive filters:
-   - Agent name
-   - Environment
-   - Model
-   - Product
-   - LLM Model
-   - Tool Used
+DESIGN
+Modern business report: light-gray page; full-width navy-to-blue gradient header with large white title/subtitle; white rounded cards with light borders, subtle shadows, consistent spacing; Segoe UI/system sans-serif; blue accent, purple billed, teal non-billed, green non-zero, amber zero. Desktop: filters 4-column grid, KPIs 5 columns, full-width insights and agent chart, other charts 2-column grid, full-width table. Medium: KPIs 2 columns. Small: all sections 1 column; table scrolls; charts/labels remain readable.
 
-4. Charts:
-   - Consumption by agent, stacked billed vs non-billed
-   - Consumption by environment
-   - Consumption by channel
-   - Top tools used
-   - Feature consumption breakdown
-   - Agents with zero vs non-zero consumption
-
-5. Detailed table combining inventory metadata and consumption:
-   - AgentName
-   - AgentId
-   - EnvironmentName
-   - Model
-   - Knowledge
-   - Files
-   - Tools
-   - CreatedAt
-   - Billed credit
-   - Non-billed credit
-   - Total credit
-   
-Design requirements:
-- Clean modern layout with cards, charts, filters, and tables.
-- Responsive layout.
-- Clear labels and readable formatting.
-- Highlight zero-consumption agents visually.
-- Output only the final HTML code.- Output only the final HTML code"
+VALIDATE BEFORE OUTPUT
+No consumption-only agents; every filtered master agent appears once; no-consumption agents remain with zeros; billed+non-billed=total at agent/dashboard levels; every filter updates all outputs; works locally offline; no external references; JavaScript has no syntax errors."
 
 <img width="1906" height="1036" alt="image" src="https://github.com/user-attachments/assets/58c230f4-3f1e-43cb-94d1-6847f7b64e58" />
 
